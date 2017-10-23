@@ -69,31 +69,30 @@ object Main extends App{
 //  }
 
   def handleStatus(buildStatus: BuildStatus) = buildStatus match {
-    case BuildUnknown => var x = 60; while (x > 0) { buildProgress; x = x-1 }
-    case BuildFailure => buildFailed; waitAMinute
-    case BuildSuccess => buildPassed; waitAMinute
-    case Building => var x = 60; while (x > 0) { buildProgress; x = x-1 }
+    case BuildUnknown => buildUnknown; waitHalfAMinute
+    case BuildFailure => buildFailed; waitHalfAMinute
+    case BuildSuccess => buildPassed; waitHalfAMinute
+    case Building => buildProgress; waitHalfAMinute
   }
 
-  def waitAMinute = {
-    Thread.sleep(60000)
+  def waitHalfAMinute = {
+    Thread.sleep(30000)
+  }
+
+  def buildUnknown = {
+    serialPort.writeString("3")
   }
 
   def buildFailed = {
-    serialPort.writeString("21")
-    serialPort.writeString("30")
+    serialPort.writeString("0")
   }
 
   def buildPassed = {
-    serialPort.writeString("20")
-    serialPort.writeString("31")
+    serialPort.writeString("1")
   }
 
   def buildProgress = {
-      buildFailed
-      Thread.sleep(250)
-      buildPassed
-      Thread.sleep(250)
+    serialPort.writeString("2")
   }
 
   class SerialEventListener extends SerialPortEventListener {

@@ -58,10 +58,10 @@ object Jenkins {
     }
   }
 
-  def getStatusFromResult(result: String): BuildStatus = result.toLowerCase match {
+  def getStatusFromResult(result: String): BuildStatus = result.toLowerCase.replace("\"", "") match {
     case str if str == "success" => println("Build status success"); BuildSuccess
     case str if str == "failure" => println("Build status failed"); BuildFailure
-    case null => println("Build status in progress"); Building
-    case _ => println("Build status unknown"); Building
+    case str if str == "null" => println("Build status in progress"); Building
+    case _ => println("Build status unknown"); BuildUnknown
   }
 }
